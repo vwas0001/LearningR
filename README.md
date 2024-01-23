@@ -1,4 +1,5 @@
 Victor Wasehuus - Diabetes
+Testing R <-> Github connection
 
 TODO: Add more to the title of your project here
 
