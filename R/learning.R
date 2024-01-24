@@ -129,3 +129,52 @@ NHANES_modified <- NHANES_small %>% # Specifying dataset
   )
 
 NHANES_modified
+
+
+# Calculating summary statistics ------------------------------------------
+
+NHANES_small %>%
+    summarise(max_bmi = max(bmi))
+
+NHANES_small %>%
+    summarise(max_bmi = max(bmi, na.rm = TRUE))
+
+NHANES_small %>%
+    summarise(max_bmi = max(bmi, na.rm = TRUE),
+              min_bmi = min(bmi, na.rm = TRUE))
+
+
+# Summary statistics by group ---------------------------------------------
+
+NHANES_small %>%
+    group_by(diabetes) %>%
+    summarise(mean_age = mean(age, na.rm = TRUE),
+              mean_bmi = mean(bmi, na.rm = TRUE))
+
+NHANES_small %>%
+    filter(!is.na(diabetes)) %>%
+    group_by(diabetes) %>%
+    summarise(mean_age = mean(age, na.rm = TRUE),
+              mean_bmi = mean(bmi, na.rm = TRUE))
+
+NHANES_small %>%
+    filter(!is.na(diabetes)) %>%
+    group_by(diabetes, phys_active) %>%
+    summarise(mean_age = mean(age, na.rm = TRUE),
+              mean_bmi = mean(bmi, na.rm = TRUE))
+
+NHANES_small %>%
+    filter(!is.na(diabetes) & !is.na(phys_active)) %>%
+    group_by(diabetes, phys_active) %>%
+    summarise(mean_age = mean(age, na.rm = TRUE),
+              mean_bmi = mean(bmi, na.rm = TRUE)) %>%
+    ungroup()
+
+
+# Save dataset as file ----------------------------------------------------
+
+readr::write_csv(
+    NHANES_small,
+    here::here("data/nhanes_small.csv")
+)
+
