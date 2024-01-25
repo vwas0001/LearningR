@@ -15,9 +15,9 @@ NHANES_small <- read.csv(here::here("data/nhanes_small.csv"))
 ```
 
 ```{r}
-#NHANES_small
+# NHANES_small
 NHANES_small <- NHANES_small %>% select(age, sex, bmi, diabetes, phys_active, bp_sys_ave, bp_dia_ave, education)
-#NHANES_small
+# NHANES_small
 ```
 
 # Table of results
@@ -49,14 +49,72 @@ NHANES_small %>%
     mean_bmi = round(mean_bmi, 1),
     # Task 2b.
     education = str_to_sentence(education)
-  ) %>% 
+  ) %>%
   rename(
     # Task 3.
     "Diabetes Status" = diabetes,
     "Education" = education,
     "Mean Age" = mean_age,
     "Mean BMI" = mean_bmi
-  ) %>% 
+  ) %>%
   knitr::kable(caption = "Mean values of Age and BMI for each education and diabetes status.")
 ```
 
+# Images
+Cute kitten in @fig-kitten-attack!
+
+![Kitten attacking flowers!](images/kitten.jpg){#fig-kitten-attack fig-align="left" width="50%" height="50%"}
+
+# Visualizations
+###  Plotting of one continuous variable
+```{r}
+#| fig-cap: "Distribution of BMI."
+#| label: fig-bmi-histo
+NHANES_small %>%
+  filter(bmi <= 60) %>%
+  ggplot(aes(x = bmi)) +
+  geom_histogram(na.rm = TRUE)
+```
+
+###  Plotting of one discrete variable
+```{r}
+#| label: fig-diabetes-education
+#| fig-cap: "Counts of Diabetes and Education."
+#| fig-subcap:
+#|   - "Number of those with or without Diabetes."
+#|   - "Number of those with different educational status."
+#| layout-ncol: 2
+NHANES_small %>%
+  filter(!is.na(diabetes)) %>%
+  ggplot(aes(x = diabetes)) +
+  geom_bar()
+
+NHANES_small %>%
+  filter(!is.na(education)) %>%
+  ggplot(aes(x = education)) +
+  geom_bar()
+```
+
+### Plotting two continuous variables
+```{r}
+NHANES_small %>%
+  ggplot(aes(x = bmi, y = bp_sys_ave)) +
+  geom_hex(na.rm = TRUE) +
+  geom_smooth(na.rm = TRUE)
+```
+
+### Plotting two discrete variables
+```{r}
+NHANES_small %>%
+  filter(!is.na(education), !is.na(diabetes)) %>%
+  ggplot(aes(x = diabetes, fill = education)) +
+  geom_bar(position = position_dodge())
+```
+
+### Plotting one discrete and one continuous variables
+```{r}
+NHANES_small %>%
+  filter(!is.na(diabetes), bmi <= 60) %>%
+  ggplot(aes(x = diabetes, y = bmi)) +
+  geom_violin(na.rm = TRUE)
+```
